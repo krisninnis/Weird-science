@@ -7,23 +7,31 @@
  */
 
 export type MemoryType =
-  | 'fact'
-  | 'preference'
-  | 'routine'
-  | 'emotional_event'
-  | 'milestone'
-  | 'promise'
-  | 'boundary'
-  | 'unresolved_issue'
-  | 'shared_story'
-  | 'shared_language' // Our Language: nicknames, inside jokes, recurring metaphors
-  | 'companion_self_update'; // companion identity evolution, bounded by canon
+  | "fact"
+  | "preference"
+  | "routine"
+  | "emotional_event"
+  | "milestone"
+  | "promise"
+  | "boundary"
+  | "unresolved_issue"
+  | "shared_story"
+  | "shared_language" // Our Language: nicknames, inside jokes, recurring metaphors
+  | "companion_self_update"; // companion identity evolution, bounded by canon
 
-export type MemorySubject = 'user' | 'companion' | 'relationship' | 'external_person';
+export type MemorySubject =
+  | "user"
+  | "companion"
+  | "relationship"
+  | "external_person";
 
-export type MemoryValence = 'positive' | 'negative' | 'mixed' | 'neutral';
+export type MemoryValence = "positive" | "negative" | "mixed" | "neutral";
 
-export type MemoryStatus = 'active' | 'archived' | 'superseded' | 'needs_review';
+export type MemoryStatus =
+  | "active"
+  | "archived"
+  | "superseded"
+  | "needs_review";
 
 export interface MemoryRecord {
   id: string;
@@ -59,7 +67,7 @@ export interface MemoryLink {
   id: string;
   fromMemoryId: string;
   toMemoryId: string;
-  relation: 'about' | 'contradicts' | 'supersedes' | 'supports' | 'followup_of';
+  relation: "about" | "contradicts" | "supersedes" | "supports" | "followup_of";
   createdAt: string;
 }
 

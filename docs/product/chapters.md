@@ -12,7 +12,7 @@ The ChapterContext type drives onboarding framing, companion tone calibration, a
 - **expat_relocation** — first year in a new country or city
 - **night_shift** — nurses, hauliers, offshore workers, anyone working hours the rest of their life isn't awake for
 - **postpartum** — the specific isolation of early parenthood
-- **widowhood** — *treated carefully; not a launch-flagship audience*
+- **widowhood** — _treated carefully; not a launch-flagship audience_
 - **life_transition** — retirement, empty nest, career change, coming out, identity shifts
 - **unspecified** — the user doesn't want to name it, or it doesn't fit
 
@@ -29,6 +29,7 @@ The ChapterContext type drives onboarding framing, companion tone calibration, a
 ## Launch ordering
 
 Start with these chapters in onboarding:
+
 1. Life transition
 2. Recovery
 3. Caregiving isolation
@@ -36,7 +37,7 @@ Start with these chapters in onboarding:
 5. Expat / relocation
 6. Grief
 7. Postpartum
-8. Widowhood *(handle carefully, validate tone before emphasizing)*
+8. Widowhood _(handle carefully, validate tone before emphasizing)_
 9. Unspecified
 
 The widowed-60+ audience is underserved and commercially meaningful, but the tone and safety burden is higher. We prove the trust layer on broader chapters first, then refine toward it.
@@ -44,6 +45,7 @@ The widowed-60+ audience is underserved and commercially meaningful, but the ton
 ## Anti-chapters
 
 Some requests should route away from a companion relationship entirely:
+
 - Active crisis → real-world support
 - Clinical treatment need → professional referral framing
 - Desire for a replacement for all human connection → not something we try to provide

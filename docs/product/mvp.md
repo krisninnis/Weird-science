@@ -31,6 +31,7 @@
 ## First build sprint
 
 **Week 1** — scaffold
+
 - Repo setup ✅
 - Tauri shell
 - React app scaffold
@@ -39,18 +40,21 @@
 - Chat UI shell
 
 **Week 2** — memory loop
+
 - Ollama integration ✅ (client)
 - Structured memory extraction
 - Memory vault UI
 - Memory save / edit / delete flow
 
 **Week 3** — relationship
+
 - Relationship engine
 - Retrieval builder
 - Prompt composer (five layers)
 - Continuity tests
 
 **Week 4** — trust surface
+
 - Onboarding with chapters
 - Privacy / safety UX
 - Timeline

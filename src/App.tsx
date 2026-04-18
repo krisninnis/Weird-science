@@ -1,11 +1,154 @@
+import { useEffect, useState } from "react";
 import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
+import { getCompanionById } from "@/lib/db/repositories/companionsRepository";
+import {
+  getRelationshipState,
+  updateTrust
+} from "@/features/relationship/repository/relationshipRepository";
+
+type CompanionView = {
+  id: string;
+  name: string;
+  archetype: string;
+} | null;
+
+type RelationshipView = {
+  phase: string;
+  chapter: string | null;
+  trust: number;
+  familiarity: number;
+} | null;
 
 function WelcomeScreen() {
+  const [companion, setCompanion] = useState<CompanionView>(null);
+  const [relationship, setRelationship] = useState<RelationshipView>(null);
+
+  useEffect(() => {
+    async function loadInitialState() {
+      const companionRow = await getCompanionById("rowan");
+      const relationshipRow = await getRelationshipState("rowan");
+
+      setCompanion(
+        companionRow
+          ? {
+              id: companionRow.id,
+              name: companionRow.name,
+              archetype: companionRow.archetype
+            }
+          : null
+      );
+
+      setRelationship(
+        relationshipRow
+          ? {
+              phase: relationshipRow.phase,
+              chapter: relationshipRow.chapter,
+              trust: relationshipRow.trust,
+              familiarity: relationshipRow.familiarity
+            }
+          : null
+      );
+    }
+
+    void loadInitialState();
+  }, []);
+
+  async function handleIncreaseTrust() {
+    if (!relationship) return;
+
+    const newTrust = Number((relationship.trust + 0.1).toFixed(2));
+    await updateTrust("rowan", newTrust);
+
+    const updatedRelationship = await getRelationshipState("rowan");
+
+    setRelationship(
+      updatedRelationship
+        ? {
+            phase: updatedRelationship.phase,
+            chapter: updatedRelationship.chapter,
+            trust: updatedRelationship.trust,
+            familiarity: updatedRelationship.familiarity
+          }
+        : null
+    );
+  }
+
   return (
     <section>
       <h1>Weird Science</h1>
       <p>A private companion platform with memory, continuity, and dignity.</p>
-      <p>This is the first shell for the MVP.</p>
+
+      <div
+        style={{
+          marginTop: "24px",
+          padding: "16px",
+          border: "1px solid #333",
+          borderRadius: "12px"
+        }}
+      >
+        <h2 style={{ marginTop: 0 }}>Seeded Companion</h2>
+        {companion ? (
+          <>
+            <p>
+              <strong>Name:</strong> {companion.name}
+            </p>
+            <p>
+              <strong>ID:</strong> {companion.id}
+            </p>
+            <p>
+              <strong>Archetype:</strong> {companion.archetype}
+            </p>
+          </>
+        ) : (
+          <p>No companion loaded yet.</p>
+        )}
+      </div>
+
+      <div
+        style={{
+          marginTop: "16px",
+          padding: "16px",
+          border: "1px solid #333",
+          borderRadius: "12px"
+        }}
+      >
+        <h2 style={{ marginTop: 0 }}>Relationship State</h2>
+        {relationship ? (
+          <>
+            <p>
+              <strong>Phase:</strong> {relationship.phase}
+            </p>
+            <p>
+              <strong>Chapter:</strong> {relationship.chapter ?? "none"}
+            </p>
+            <p>
+              <strong>Trust:</strong> {relationship.trust}
+            </p>
+            <p>
+              <strong>Familiarity:</strong> {relationship.familiarity}
+            </p>
+
+            <button
+              onClick={() => {
+                void handleIncreaseTrust();
+              }}
+              style={{
+                marginTop: "12px",
+                padding: "10px 14px",
+                borderRadius: "10px",
+                border: "1px solid #444",
+                background: "#2a2a2a",
+                color: "#ffffff",
+                cursor: "pointer"
+              }}
+            >
+              Increase Trust
+            </button>
+          </>
+        ) : (
+          <p>No relationship state loaded yet.</p>
+        )}
+      </div>
     </section>
   );
 }
@@ -33,7 +176,7 @@ const linkStyle = ({ isActive }: { isActive: boolean }) => ({
   textDecoration: "none",
   padding: "10px 14px",
   borderRadius: "10px",
-  background: isActive ? "#2a2a2a" : "transparent",
+  background: isActive ? "#2a2a2a" : "transparent"
 });
 
 export default function App() {
@@ -44,7 +187,7 @@ export default function App() {
           minHeight: "100vh",
           background: "#111111",
           color: "#f5f5f5",
-          fontFamily: "Arial, sans-serif",
+          fontFamily: "Arial, sans-serif"
         }}
       >
         <header
@@ -56,7 +199,7 @@ export default function App() {
             borderBottom: "1px solid #2a2a2a",
             position: "sticky",
             top: 0,
-            background: "#111111",
+            background: "#111111"
           }}
         >
           <div>

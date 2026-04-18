@@ -9,9 +9,9 @@
  * Never speaks to the user directly. That's the hosted model's job.
  */
 
-const DEFAULT_BASE_URL = 'http://127.0.0.1:11434';
-const DEFAULT_MODEL = 'llama3.2';
-const DEFAULT_EMBED_MODEL = 'nomic-embed-text';
+const DEFAULT_BASE_URL = "http://127.0.0.1:11434";
+const DEFAULT_MODEL = "llama3.2";
+const DEFAULT_EMBED_MODEL = "nomic-embed-text";
 
 export interface OllamaConfig {
   baseUrl?: string;
@@ -52,20 +52,22 @@ export class OllamaClient {
     };
 
     const res = await fetch(`${this.baseUrl}/api/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
 
     if (!res.ok) {
-      throw new Error(`Ollama generate failed: ${res.status} ${res.statusText}`);
+      throw new Error(
+        `Ollama generate failed: ${res.status} ${res.statusText}`
+      );
     }
 
     const payload = (await res.json()) as { response: string };
     let parsed: unknown;
     try {
       parsed = JSON.parse(payload.response);
-    } catch (err) {
+    } catch {
       throw new Error(`Ollama returned non-JSON response: ${payload.response}`);
     }
     return req.validate(parsed);
@@ -76,8 +78,8 @@ export class OllamaClient {
    */
   async embed(text: string): Promise<number[]> {
     const res = await fetch(`${this.baseUrl}/api/embeddings`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: this.embeddingModel,
         prompt: text,
@@ -94,7 +96,7 @@ export class OllamaClient {
    */
   async isAvailable(): Promise<boolean> {
     try {
-      const res = await fetch(`${this.baseUrl}/api/tags`, { method: 'GET' });
+      const res = await fetch(`${this.baseUrl}/api/tags`, { method: "GET" });
       return res.ok;
     } catch {
       return false;

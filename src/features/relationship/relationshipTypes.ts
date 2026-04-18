@@ -7,14 +7,14 @@
  */
 
 export type RelationshipPhase =
-  | 'new' // first contact, everything is introduction
-  | 'warming' // familiarity forming, tone settling
-  | 'bonded' // established rhythm, shared references emerging
-  | 'deepening' // disclosure, trust, emotional range expanding
-  | 'strained' // unresolved friction, contradictions, missed callbacks
-  | 'repairing' // post-rupture work, explicit repair in progress
-  | 'fledging' // user is flourishing; companion is rooting for independence
-  | 'dormant'; // user has paused or left; memory intact, companion silent
+  | "new" // first contact, everything is introduction
+  | "warming" // familiarity forming, tone settling
+  | "bonded" // established rhythm, shared references emerging
+  | "deepening" // disclosure, trust, emotional range expanding
+  | "strained" // unresolved friction, contradictions, missed callbacks
+  | "repairing" // post-rupture work, explicit repair in progress
+  | "fledging" // user is flourishing; companion is rooting for independence
+  | "dormant"; // user has paused or left; memory intact, companion silent
 
 export interface RelationshipState {
   companionId: string;
@@ -45,15 +45,15 @@ export interface RelationshipState {
 }
 
 export type ChapterContext =
-  | 'grief'
-  | 'recovery'
-  | 'caregiving_isolation'
-  | 'expat_relocation'
-  | 'night_shift'
-  | 'postpartum'
-  | 'widowhood'
-  | 'life_transition'
-  | 'unspecified';
+  | "grief"
+  | "recovery"
+  | "caregiving_isolation"
+  | "expat_relocation"
+  | "night_shift"
+  | "postpartum"
+  | "widowhood"
+  | "life_transition"
+  | "unspecified";
 
 /**
  * Guidance computed from state — what the composer should actually do.
@@ -62,10 +62,10 @@ export type ChapterContext =
 export interface StateGuidance {
   phase: RelationshipPhase;
   toneHint: string;
-  disclosureLevel: 'guarded' | 'measured' | 'open' | 'intimate';
-  initiativeLevel: 'reactive' | 'gentle' | 'engaged' | 'steering';
+  disclosureLevel: "guarded" | "measured" | "open" | "intimate";
+  initiativeLevel: "reactive" | "gentle" | "engaged" | "steering";
   romanticAllowed: boolean;
   romanticCeiling: number; // upper bound on romanticCharge given current dependencyRisk
-  groundingPriority: 'low' | 'moderate' | 'high'; // rises with dependencyRisk
+  groundingPriority: "low" | "moderate" | "high"; // rises with dependencyRisk
   encouragesOfflineConnection: boolean;
 }

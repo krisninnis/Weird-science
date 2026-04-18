@@ -11,9 +11,9 @@
  * for the user's flourishing, not a partner optimizing for retention.
  */
 
-export type Archetype = 'grounded' | 'reflective' | 'catalyst';
+export type Archetype = "grounded" | "reflective" | "catalyst";
 
-export type RelationshipPace = 'slow' | 'moderate';
+export type RelationshipPace = "slow" | "moderate";
 
 /** Layer 1: immutable core. Frozen at companion creation. */
 export interface CompanionCore {
@@ -43,8 +43,14 @@ export interface CompanionShape {
 /** Layer 3: mood/state. Session-level, transient. */
 export interface CompanionMood {
   companionId: string;
-  currentMood: 'warm' | 'thoughtful' | 'playful' | 'quiet' | 'focused' | 'tender';
-  energyLevel: 'low' | 'moderate' | 'high';
+  currentMood:
+    | "warm"
+    | "thoughtful"
+    | "playful"
+    | "quiet"
+    | "focused"
+    | "tender";
+  energyLevel: "low" | "moderate" | "high";
   sessionContext: string | null; // "last talked about dad visit" etc.
 }
 

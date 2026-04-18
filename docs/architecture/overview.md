@@ -3,12 +3,14 @@
 ## The two brains
 
 ### Conversation brain (hosted)
+
 - Handles live dialogue
 - Receives a composed prompt containing: character core, relationship state guidance, selected memory bundle, recent conversation window, safety instructions
 - Never writes to memory directly
 - Never invents state updates
 
 ### Memory brain (local, Ollama)
+
 - Runs on the user's machine
 - JSON-schema-constrained structured extraction
 - Produces `MemoryExtractionCandidate` records from dialogue turns
@@ -75,9 +77,10 @@ Post-response memory pass
 Eight numeric dimensions plus a phase enum.
 
 ### Phases
+
 `new` → `warming` → `bonded` → `deepening` → `strained` → `repairing`
-                                                          ↓
-                                                    `fledging` → `dormant`
+↓
+`fledging` → `dormant`
 
 - `fledging`: user is flourishing, companion is actively rooting for independence
 - `dormant`: user has paused or left; memory intact, companion silent
@@ -91,6 +94,7 @@ Eight numeric dimensions plus a phase enum.
 - **Tone shift:** high `dependencyRisk` pulls the companion toward grounding, offline-connection encouragement, and less possessive language
 
 ### Signals that raise dependency risk
+
 - User says they only have the companion
 - User withdraws from named real-world contacts
 - User asks for exclusivity
@@ -104,7 +108,7 @@ Every assistant message writes two rows:
 - `response_memory_uses`: `{ message_id, memory_id, usage: 'used' | 'considered_unused', weight }`
 - `response_state_influences`: `{ message_id, variable, value, influence }`
 
-The vault UI reads these to answer: *"why did she say that?"*
+The vault UI reads these to answer: _"why did she say that?"_
 
 ## Proportional forgetting
 
@@ -115,16 +119,18 @@ Each memory has `fade_factor` (0..1) and `reinforcement_count`.
 - High-importance or pinned memories do not fade
 - Emotional events fade more slowly than facts
 
-When the memory brain's confidence in a faded memory drops below a threshold, the composer may instead surface a prompt-to-remind: *"You mentioned your sister once — remind me what's going on there?"*
+When the memory brain's confidence in a faded memory drops below a threshold, the composer may instead surface a prompt-to-remind: _"You mentioned your sister once — remind me what's going on there?"_
 
 ## Repair loop
 
 Triggered when:
+
 - User corrects the companion
 - Companion references a memory with stale or contradictory state
 - A `needs_review` memory is implicated in a reply
 
 Behavior:
+
 1. Acknowledge the specific miss (not a generic apology)
 2. Update the memory transparently — tell the user what was changed
 3. Recover without over-grovelling

@@ -1,5 +1,5 @@
-import Database from '@tauri-apps/plugin-sql';
-import { ALL_MIGRATIONS } from './schema';
+import Database from "@tauri-apps/plugin-sql";
+import { ALL_MIGRATIONS } from "./schema";
 
 let dbInstance: Database | null = null;
 
@@ -9,35 +9,43 @@ let dbInstance: Database | null = null;
  */
 export async function getDb(): Promise<Database> {
   if (dbInstance) return dbInstance;
-  dbInstance = await Database.load('sqlite:weird-science.db');
+
+  dbInstance = await Database.load("sqlite:weird-science.db");
   await runMigrations(dbInstance);
+
   return dbInstance;
 }
 
 async function runMigrations(db: Database): Promise<void> {
-  // Ensure schema_meta exists before we check version.
   await db.execute(`
     CREATE TABLE IF NOT EXISTS schema_meta (
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
-    );
+    )
   `);
-  const rows = (await db.select<Array<{ value: string }>>(
-    "SELECT value FROM schema_meta WHERE key = 'version'"
-  )) ?? [];
-  const current = rows.length ? parseInt(rows[0].value, 10) : 0;
+
+  const rows =
+    (await db.select<Array<{ value: string }>>(
+      "SELECT value FROM schema_meta WHERE key = 'version'"
+    )) ?? [];
+
+  const currentVersion = rows.length > 0 ? parseInt(rows[0].value, 10) : 0;
 
   for (const migration of ALL_MIGRATIONS) {
-    if (migration.version > current) {
-      // Tauri's plugin-sql executes one statement per call for execute();
-      // but `load` variants accept multi-statement. We split conservatively.
+    if (migration.version > currentVersion) {
       const statements = migration.sql
-        .split(/;\s*\n/)
-        .map((s) => s.trim())
+        .split(";")
+        .map((statement) => statement.trim())
         .filter(Boolean);
-      for (const stmt of statements) {
-        await db.execute(stmt);
+
+      for (const statement of statements) {
+        await db.execute(statement);
       }
+
+      await db.execute(
+        "INSERT OR REPLACE INTO schema_meta (key, value) VALUES ('version', ?)",
+        [String(migration.version)]
+      );
     }
   }
 }

@@ -98,3 +98,26 @@ export async function updateTrust(
     [trust, new Date().toISOString(), companionId]
   );
 }
+export async function updateRelationshipPhase(
+  companionId: string,
+  phase:
+    | "new"
+    | "warming"
+    | "bonded"
+    | "deepening"
+    | "strained"
+    | "repairing"
+    | "fledging"
+    | "dormant"
+): Promise<void> {
+  const db = await getDb();
+
+  await db.execute(
+    `
+    UPDATE relationship_states
+    SET phase = ?, updated_at = ?
+    WHERE companion_id = ?
+    `,
+    [phase, new Date().toISOString(), companionId]
+  );
+}

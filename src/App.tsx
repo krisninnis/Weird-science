@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
-import { getCompanionById } from "@/lib/db/repositories/companionsRepository";
+import { getCompanionById } from "@/features/companion/repository/companionRepository";
+import ChatScreen from "@/features/chat/screens/ChatScreen";
+import ConciergeScreen from "@/features/onboarding/screens/ConciergeScreen";
+import { getOnboardingSelection } from "@/features/onboarding/onboardingStorage";
 import {
   getRelationshipState,
   updateTrust
@@ -22,11 +25,21 @@ type RelationshipView = {
 function WelcomeScreen() {
   const [companion, setCompanion] = useState<CompanionView>(null);
   const [relationship, setRelationship] = useState<RelationshipView>(null);
+  const [selectedCompanionId, setSelectedCompanionId] = useState<
+    "mara" | "iris" | "rowan"
+  >("rowan");
+
+  useEffect(() => {
+    const onboarding = getOnboardingSelection();
+    if (onboarding?.companionId) {
+      setSelectedCompanionId(onboarding.companionId);
+    }
+  }, []);
 
   useEffect(() => {
     async function loadInitialState() {
-      const companionRow = await getCompanionById("rowan");
-      const relationshipRow = await getRelationshipState("rowan");
+      const companionRow = await getCompanionById(selectedCompanionId);
+      const relationshipRow = await getRelationshipState(selectedCompanionId);
 
       setCompanion(
         companionRow
@@ -51,15 +64,15 @@ function WelcomeScreen() {
     }
 
     void loadInitialState();
-  }, []);
+  }, [selectedCompanionId]);
 
   async function handleIncreaseTrust() {
     if (!relationship) return;
 
     const newTrust = Number((relationship.trust + 0.1).toFixed(2));
-    await updateTrust("rowan", newTrust);
+    await updateTrust(selectedCompanionId, newTrust);
 
-    const updatedRelationship = await getRelationshipState("rowan");
+    const updatedRelationship = await getRelationshipState(selectedCompanionId);
 
     setRelationship(
       updatedRelationship
@@ -86,7 +99,7 @@ function WelcomeScreen() {
           borderRadius: "12px"
         }}
       >
-        <h2 style={{ marginTop: 0 }}>Seeded Companion</h2>
+        <h2 style={{ marginTop: 0 }}>Selected Companion</h2>
         {companion ? (
           <>
             <p>
@@ -153,15 +166,6 @@ function WelcomeScreen() {
   );
 }
 
-function ChatScreen() {
-  return (
-    <section>
-      <h1>Chat</h1>
-      <p>Companion conversation UI will live here.</p>
-    </section>
-  );
-}
-
 function VaultScreen() {
   return (
     <section>
@@ -210,6 +214,9 @@ export default function App() {
             <NavLink to="/" style={linkStyle} end>
               Welcome
             </NavLink>
+            <NavLink to="/concierge" style={linkStyle}>
+              Concierge
+            </NavLink>
             <NavLink to="/chat" style={linkStyle}>
               Chat
             </NavLink>
@@ -222,6 +229,7 @@ export default function App() {
         <main style={{ padding: "32px" }}>
           <Routes>
             <Route path="/" element={<WelcomeScreen />} />
+            <Route path="/concierge" element={<ConciergeScreen />} />
             <Route path="/chat" element={<ChatScreen />} />
             <Route path="/vault" element={<VaultScreen />} />
           </Routes>

@@ -6,3 +6,4 @@
 - Documented the snake_case ↔ camelCase repo boundary in docs/db/naming-boundary.md.
 - Confirmed `RelationshipPhase` as the canonical phase type.
 - Audit of `Phase` usages recorded for cleanup in Task 1.3.
+- Resolved the existing ESLint peer dependency conflict by upgrading `eslint-plugin-react-hooks` to v5.

@@ -1,18 +1,25 @@
-import React, { useEffect } from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
+import { StrictMode, useEffect } from "react";
+import { createRoot } from "react-dom/client";
+import App from "@app/App";
 import { seedInitialData } from "@/lib/db/seed";
+import "@styles/globals.css";
 
-function Root() {
+function Bootstrap(): JSX.Element {
   useEffect(() => {
     void seedInitialData();
   }, []);
 
-  return (
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  );
+  return <App />;
 }
 
-ReactDOM.createRoot(document.getElementById("root")!).render(<Root />);
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error("Root element not found");
+}
+
+createRoot(rootElement).render(
+  <StrictMode>
+    <Bootstrap />
+  </StrictMode>
+);

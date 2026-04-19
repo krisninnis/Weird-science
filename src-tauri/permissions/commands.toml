@@ -1,0 +1,26 @@
+"$schema" = "../gen/schemas/schema.json"
+
+[[permission]]
+identifier = "allow-ollama-chat"
+description = "Enables the ollama_chat command without any pre-configured scope."
+commands.allow = ["ollama_chat"]
+
+[[permission]]
+identifier = "allow-ollama-embed"
+description = "Enables the ollama_embed command without any pre-configured scope."
+commands.allow = ["ollama_embed"]
+
+[[permission]]
+identifier = "allow-hosted-chat"
+description = "Enables the hosted_chat command without any pre-configured scope."
+commands.allow = ["hosted_chat"]
+
+[[permission]]
+identifier = "allow-vault-path"
+description = "Enables the vault_path command without any pre-configured scope."
+commands.allow = ["vault_path"]
+
+[[permission]]
+identifier = "allow-cancel-stream"
+description = "Enables the cancel_stream command without any pre-configured scope."
+commands.allow = ["cancel_stream"]

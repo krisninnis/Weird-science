@@ -5,10 +5,28 @@
   "windows": ["main"],
   "permissions": [
     "core:default",
-    "log:default",
     "sql:default",
-    "sql:allow-load",
     "sql:allow-execute",
-    "sql:allow-select"
+    {
+      "identifier": "sql:allow-load",
+      "allow": ["sqlite:$APPDATA/vault/weird-science.db"]
+    },
+    "fs:default",
+    {
+      "identifier": "fs:scope",
+      "allow": [
+        {
+          "path": "$APPDATA/vault"
+        },
+        {
+          "path": "$APPDATA/vault/**"
+        }
+      ]
+    },
+    "allow-ollama-chat",
+    "allow-ollama-embed",
+    "allow-hosted-chat",
+    "allow-vault-path",
+    "allow-cancel-stream"
   ]
 }

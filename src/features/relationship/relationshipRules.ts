@@ -1,14 +1,6 @@
-type Phase = 
-  | "new"
-  | "warming"
-  | "bonded"
-  | "deepening"
-  | "strained"
-  | "repairing"
-  | "fledging"
-  | "dormant";
+import type { RelationshipPhase } from "./relationshipTypes";
 
-export function getTrustCapForPhase(phase: Phase): number {
+export function getTrustCapForPhase(phase: RelationshipPhase): number {
   switch (phase) {
     case "new":
       return 0.4;
@@ -23,7 +15,10 @@ export function getTrustCapForPhase(phase: Phase): number {
   }
 }
 
-export function getNextPhase(currentPhase: Phase, trust: number): Phase {
+export function getNextPhase(
+  currentPhase: RelationshipPhase,
+  trust: number
+): RelationshipPhase {
   if (currentPhase === "new" && trust >= 0.4) return "warming";
   if (currentPhase === "warming" && trust >= 0.6) return "bonded";
   if (currentPhase === "bonded" && trust >= 0.75) return "deepening";

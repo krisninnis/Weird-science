@@ -25,10 +25,28 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "better-sqlite3",
+              message:
+                "better-sqlite3 is test-only. Production must use @tauri-apps/plugin-sql.",
+            },
+          ],
+        },
+      ],
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },
       ],
+    },
+  },
+  {
+    files: ["src/lib/db/__tests__/**"],
+    rules: {
+      "no-restricted-imports": "off",
     },
   }
 );

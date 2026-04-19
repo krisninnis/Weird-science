@@ -1,8 +1,21 @@
 import { getDb } from "@/lib/db/sqlite";
+import { conversationRowSchema, parseTableRows } from "@/lib/db/rowSchemas";
 import type {
   Conversation,
   CreateConversationInput
 } from "../chatTypes";
+
+function mapConversationRow(row: unknown): Conversation {
+  const parsed = conversationRowSchema.parse(row);
+
+  return {
+    id: parsed.id,
+    companionId: parsed.companion_id,
+    startedAt: parsed.started_at,
+    endedAt: parsed.ended_at,
+    title: parsed.title
+  };
+}
 
 /**
  * Create a new conversation for a companion.
@@ -40,7 +53,7 @@ export async function getConversationById(
 ): Promise<Conversation | null> {
   const db = await getDb();
 
-  const rows = await db.select<any[]>(
+  const rows = await db.select<unknown[]>(
     `
     SELECT * FROM conversations WHERE id = ? LIMIT 1
   `,
@@ -49,15 +62,7 @@ export async function getConversationById(
 
   if (!rows.length) return null;
 
-  const row = rows[0];
-
-  return {
-    id: row.id,
-    companionId: row.companion_id,
-    startedAt: row.started_at,
-    endedAt: row.ended_at,
-    title: row.title
-  };
+  return mapConversationRow(rows[0]);
 }
 
 /**
@@ -68,7 +73,7 @@ export async function getConversationsForCompanion(
 ): Promise<Conversation[]> {
   const db = await getDb();
 
-  const rows = await db.select<any[]>(
+  const rows = await db.select<unknown[]>(
     `
     SELECT * FROM conversations
     WHERE companion_id = ?
@@ -77,13 +82,9 @@ export async function getConversationsForCompanion(
     [companionId]
   );
 
-  return rows.map((row) => ({
-    id: row.id,
-    companionId: row.companion_id,
-    startedAt: row.started_at,
-    endedAt: row.ended_at,
-    title: row.title
-  }));
+  return parseTableRows("conversations", conversationRowSchema, rows).map(
+    mapConversationRow
+  );
 }
 /**
  * Get the most recent conversation for a companion.
@@ -93,7 +94,7 @@ export async function getLatestConversationForCompanion(
 ): Promise<Conversation | null> {
   const db = await getDb();
 
-  const rows = await db.select<any[]>(
+  const rows = await db.select<unknown[]>(
     `
     SELECT * FROM conversations
     WHERE companion_id = ?
@@ -105,13 +106,5 @@ export async function getLatestConversationForCompanion(
 
   if (!rows.length) return null;
 
-  const row = rows[0];
-
-  return {
-    id: row.id,
-    companionId: row.companion_id,
-    startedAt: row.started_at,
-    endedAt: row.ended_at,
-    title: row.title
-  };
+  return mapConversationRow(rows[0]);
 }

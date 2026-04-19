@@ -10,7 +10,7 @@
  *  - `response_memory_uses` table exists from v1 to power inspectable replies.
  */
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export const MIGRATION_001_INITIAL = `
 -- Companions: three-layer canon
@@ -176,6 +176,13 @@ CREATE TABLE IF NOT EXISTS schema_meta (
 INSERT OR REPLACE INTO schema_meta (key, value) VALUES ('version', '1');
 `;
 
+export const MIGRATION_002_ADD_MEMORY_EMBEDDINGS = `
+ALTER TABLE memories ADD COLUMN embedding BLOB;
+ALTER TABLE memories ADD COLUMN embedding_model TEXT;
+INSERT OR REPLACE INTO schema_meta (key, value) VALUES ('version', '2');
+`;
+
 export const ALL_MIGRATIONS: Array<{ version: number; sql: string }> = [
   { version: 1, sql: MIGRATION_001_INITIAL },
+  { version: 2, sql: MIGRATION_002_ADD_MEMORY_EMBEDDINGS },
 ];

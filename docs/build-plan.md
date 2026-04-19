@@ -1,6 +1,6 @@
-# WEIRD SCIENCE — MASTER BUILD PLAN
+# Weird Science — Master Build Plan
 
-Last updated: 2026-04-19
+_Last updated: 2026-04-19_
 
 Legend:
 [x] done and committed

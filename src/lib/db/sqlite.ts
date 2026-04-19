@@ -2,6 +2,7 @@ import Database from "@tauri-apps/plugin-sql";
 import { ALL_MIGRATIONS } from "./schema";
 
 let dbInstance: Database | null = null;
+export type RepositoryDatabase = Pick<Database, "execute" | "select">;
 
 /**
  * Lazy-loaded SQLite connection.
@@ -48,4 +49,50 @@ async function runMigrations(db: Database): Promise<void> {
       );
     }
   }
+}
+
+export function encodeEmbedding(vec: number[]): Uint8Array {
+  const buffer = new ArrayBuffer(vec.length * Float32Array.BYTES_PER_ELEMENT);
+  const view = new DataView(buffer);
+
+  vec.forEach((value, index) => {
+    view.setFloat32(index * Float32Array.BYTES_PER_ELEMENT, value, true);
+  });
+
+  return new Uint8Array(buffer);
+}
+
+export function decodeEmbedding(bytes: Uint8Array): number[] {
+  const view = new DataView(
+    bytes.buffer,
+    bytes.byteOffset,
+    bytes.byteLength
+  );
+  const values: number[] = [];
+
+  for (let offset = 0; offset < view.byteLength; offset += Float32Array.BYTES_PER_ELEMENT) {
+    values.push(view.getFloat32(offset, true));
+  }
+
+  return values;
+}
+
+export async function withTransaction<T>(
+  db: RepositoryDatabase,
+  fn: () => Promise<T>
+): Promise<T> {
+  await db.execute("BEGIN");
+
+  try {
+    const result = await fn();
+    await db.execute("COMMIT");
+    return result;
+  } catch (error) {
+    await db.execute("ROLLBACK");
+    throw error;
+  }
+}
+
+export function clamp01(n: number): number {
+  return Math.min(1, Math.max(0, n));
 }

@@ -1,5 +1,18 @@
 import { getDb } from "@/lib/db/sqlite";
+import { messageRowSchema, parseTableRows } from "@/lib/db/rowSchemas";
 import type { CreateMessageInput, Message } from "../chatTypes";
+
+function mapMessageRow(row: unknown): Message {
+  const parsed = messageRowSchema.parse(row);
+
+  return {
+    id: parsed.id,
+    conversationId: parsed.conversation_id,
+    role: parsed.role,
+    content: parsed.content,
+    createdAt: parsed.created_at
+  };
+}
 
 /**
  * Create and persist a message in a conversation.
@@ -37,7 +50,7 @@ export async function getMessagesForConversation(
 ): Promise<Message[]> {
   const db = await getDb();
 
-  const rows = await db.select<any[]>(
+  const rows = await db.select<unknown[]>(
     `
     SELECT * FROM messages
     WHERE conversation_id = ?
@@ -46,13 +59,7 @@ export async function getMessagesForConversation(
     [conversationId]
   );
 
-  return rows.map((row) => ({
-    id: row.id,
-    conversationId: row.conversation_id,
-    role: row.role,
-    content: row.content,
-    createdAt: row.created_at
-  }));
+  return parseTableRows("messages", messageRowSchema, rows).map(mapMessageRow);
 }
 
 /**
@@ -64,7 +71,7 @@ export async function getRecentMessagesForConversation(
 ): Promise<Message[]> {
   const db = await getDb();
 
-  const rows = await db.select<any[]>(
+  const rows = await db.select<unknown[]>(
     `
     SELECT * FROM messages
     WHERE conversation_id = ?
@@ -74,13 +81,7 @@ export async function getRecentMessagesForConversation(
     [conversationId, limit]
   );
 
-  return rows
-    .map((row) => ({
-      id: row.id,
-      conversationId: row.conversation_id,
-      role: row.role,
-      content: row.content,
-      createdAt: row.created_at
-    }))
+  return parseTableRows("messages", messageRowSchema, rows)
+    .map(mapMessageRow)
     .reverse();
 }

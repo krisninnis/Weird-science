@@ -105,6 +105,11 @@ struct DonePayload {
     error: Option<StructuredError>,
 }
 
+#[derive(Serialize, Clone)]
+struct ChunkPayload {
+    text: String,
+}
+
 #[derive(Debug, Deserialize)]
 struct OllamaChatChunk {
     message: Option<OllamaMessageChunk>,
@@ -299,7 +304,10 @@ fn emit_chunk<R: Runtime>(
     request_id: &str,
     text: String,
 ) -> AppResult<()> {
-    app.emit(&kind.chunk_event_name(request_id), text)
+    app.emit(
+        &kind.chunk_event_name(request_id),
+        ChunkPayload { text },
+    )
         .map_err(|error| internal_error(error.to_string()))
 }
 

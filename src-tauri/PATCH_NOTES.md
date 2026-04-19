@@ -107,3 +107,10 @@ or
   - `@styles` -> `src/styles`
 - Both `tsconfig.json` and `vite.config.ts` must define the same alias map because TypeScript path resolution and Vite module resolution are separate systems.
 - Rule: before adding a new alias, update both files in the same commit.
+
+## Chunk payload normalization (2026-04-19)
+
+- Chunk events now emit `{ text: string }` instead of a raw string.
+- Applies to both `ollama:chunk:{request_id}` and `hosted:chunk:{request_id}`.
+- Done event shape unchanged: `{ ok: boolean, error?: StructuredError }`.
+- Motivation: the renderer-side client (Task 1.4) needs a consistent object shape across chunk and done events for type safety and forward compatibility (e.g. future fields like `chunk_index`, `done_reason`).

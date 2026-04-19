@@ -69,3 +69,57 @@ export interface StateGuidance {
   groundingPriority: "low" | "moderate" | "high"; // rises with dependencyRisk
   encouragesOfflineConnection: boolean;
 }
+
+export interface RelationshipSignals {
+  trustDelta: number;
+  familiarityDelta: number;
+  affectionDelta: number;
+  opennessDelta: number;
+  tensionDelta: number;
+  playfulnessDelta: number;
+  romanticChargeDelta: number;
+  dependencyRiskDelta: number;
+  repairAttempt: boolean;
+  conflict: boolean;
+  withdrawal: boolean;
+  offlineReengagement: boolean;
+}
+
+export interface RelationshipUpdateContext {
+  now?: string;
+  inactivityDays?: number;
+}
+
+export type RelationshipInfluenceVariable =
+  | keyof RelationshipState
+  | "phase"
+  | "romanticCeiling";
+
+export interface RelationshipInfluenceNote {
+  variable: RelationshipInfluenceVariable;
+  value: number | string | null;
+  influence: string;
+}
+
+export interface PhaseChange {
+  from: RelationshipPhase;
+  to: RelationshipPhase;
+  reason: string;
+}
+
+export interface RelationshipUpdateResult {
+  nextState: RelationshipState;
+  deltas: {
+    trust: number;
+    familiarity: number;
+    affection: number;
+    openness: number;
+    tension: number;
+    playfulness: number;
+    romanticCharge: number;
+    dependencyRisk: number;
+  };
+  phaseChange: PhaseChange | null;
+  influences: RelationshipInfluenceNote[];
+  guidance: StateGuidance;
+}

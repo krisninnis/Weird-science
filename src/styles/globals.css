@@ -1,21 +1,34 @@
 :root {
-  color-scheme: light dark;
+  color-scheme: dark;
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
-  --bg: #f7f5f2;
-  --fg: #1c1b1a;
-  --muted: #6b6a68;
-  --accent: #6b5b95;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1f1d1c;
-    --fg: #f4f1ec;
-    --muted: #b0aaa1;
-    --accent: #9b8ad1;
-  }
+    "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia,
+    "Times New Roman", serif;
+  --bg: #0a0f11;
+  --bg-deep: #05090a;
+  --bg-grid: rgba(115, 170, 170, 0.06);
+  --surface: rgba(14, 21, 23, 0.92);
+  --surface-strong: rgba(18, 28, 31, 0.96);
+  --surface-glass: rgba(24, 37, 40, 0.78);
+  --surface-elevated: rgba(28, 43, 47, 0.9);
+  --fg: #edf2ea;
+  --fg-soft: #c7d2cb;
+  --muted: #8ea19d;
+  --muted-strong: #9cb3ad;
+  --line: rgba(133, 175, 170, 0.16);
+  --line-strong: rgba(133, 175, 170, 0.28);
+  --accent: #81cbc3;
+  --accent-strong: #abefe5;
+  --accent-soft: rgba(129, 203, 195, 0.12);
+  --accent-glow: rgba(129, 203, 195, 0.18);
+  --warning: #c89a68;
+  --warning-soft: rgba(200, 154, 104, 0.14);
+  --danger: #d88b7d;
+  --shadow: 0 26px 80px rgba(0, 0, 0, 0.42);
+  --panel-shadow:
+    inset 0 1px 0 rgba(220, 240, 236, 0.04),
+    inset 0 -1px 0 rgba(8, 12, 13, 0.75),
+    0 20px 50px rgba(0, 0, 0, 0.35);
+  --focus-ring: 0 0 0 2px rgba(129, 203, 195, 0.3);
 }
 
 * {
@@ -35,20 +48,62 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
+body,
+h1,
+h2,
+h3,
+p,
+ul,
+dl,
+dd,
+dt {
   margin: 0;
-  background: var(--bg);
+}
+
+body {
+  position: relative;
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(129, 203, 195, 0.12), transparent 24%),
+    radial-gradient(circle at 78% 18%, rgba(200, 154, 104, 0.1), transparent 18%),
+    radial-gradient(circle at bottom, rgba(35, 73, 74, 0.24), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 24%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
   color: var(--fg);
 }
 
-body,
-h1,
-p {
-  margin: 0;
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.03) 0,
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    linear-gradient(
+      90deg,
+      transparent 0,
+      transparent calc(100% - 1px),
+      rgba(129, 203, 195, 0.05) calc(100% - 1px),
+      rgba(129, 203, 195, 0.05) 100%
+    );
+  background-size: 100% 4px, 28px 28px;
+  opacity: 0.18;
+  mix-blend-mode: screen;
 }
 
-a {
-  color: inherit;
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at center, transparent 56%, rgba(0, 0, 0, 0.22) 100%);
 }
 
 button,
@@ -58,8 +113,775 @@ select {
   font: inherit;
 }
 
+button {
+  border: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 [data-theme="calm"] {
   min-height: 100vh;
-  background: var(--bg);
   color: var(--fg);
+}
+
+#root {
+  isolation: isolate;
+}
+
+.app-shell,
+.screen-shell {
+  width: min(1240px, calc(100vw - 48px));
+  margin: 0 auto;
+  padding: 34px 0 40px;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: minmax(340px, 1.04fr) minmax(460px, 0.96fr);
+  gap: 24px;
+}
+
+.screen-shell,
+.chat-shell {
+  display: grid;
+  gap: 24px;
+}
+
+.chat-shell {
+  grid-template-columns: minmax(270px, 320px) minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.hero-panel,
+.onboarding-panel,
+.chat-sidebar,
+.chat-stage,
+.empty-card,
+.feature-card,
+.spotlight-card,
+.review-card,
+.sidebar-card,
+.archive-card,
+.dossier-card {
+  position: relative;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%),
+    linear-gradient(180deg, rgba(129, 203, 195, 0.03), transparent 100%),
+    var(--surface);
+  box-shadow: var(--panel-shadow);
+  overflow: hidden;
+}
+
+.hero-panel::before,
+.onboarding-panel::before,
+.chat-sidebar::before,
+.chat-stage::before,
+.empty-card::before,
+.feature-card::before,
+.spotlight-card::before,
+.review-card::before,
+.sidebar-card::before,
+.archive-card::before,
+.dossier-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(129, 203, 195, 0.08), transparent 12%),
+    linear-gradient(90deg, rgba(129, 203, 195, 0.04), transparent 25%, transparent 75%, rgba(200, 154, 104, 0.04));
+  opacity: 0.7;
+}
+
+.hero-panel,
+.onboarding-panel,
+.chat-sidebar,
+.chat-stage {
+  border-radius: 28px;
+}
+
+.feature-card,
+.spotlight-card,
+.review-card,
+.sidebar-card,
+.archive-card,
+.dossier-card,
+.empty-card,
+.message-card,
+.message-empty-state,
+.choice-card {
+  border-radius: 22px;
+}
+
+.hero-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 780px;
+  padding: 40px;
+}
+
+.hero-copy,
+.panel-stack,
+.screen-copy-stack,
+.archive-stack,
+.status-stack,
+.field-stack {
+  display: grid;
+  gap: 18px;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.field-block {
+  display: grid;
+  gap: 10px;
+}
+
+.field-block--wide {
+  grid-column: 1 / -1;
+}
+
+.field-label,
+.field-help {
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.field-label {
+  color: var(--fg-soft);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.field-help {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.hero-title,
+.screen-header h1,
+.onboarding-panel h2,
+.chat-header h2 {
+  letter-spacing: -0.035em;
+  line-height: 0.96;
+}
+
+.hero-title {
+  max-width: 11ch;
+  font-size: clamp(3.1rem, 5vw, 5.2rem);
+}
+
+.screen-header h1 {
+  font-size: clamp(2.5rem, 3.7vw, 3.9rem);
+  margin-top: 8px;
+}
+
+.hero-subtitle,
+.screen-copy,
+.section-copy,
+.hero-note,
+.muted-copy,
+.feature-card p,
+.empty-card p,
+.sidebar-card p,
+.choice-card span,
+.message-card p,
+.message-empty-state p,
+.archive-card p,
+.dossier-card p {
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  line-height: 1.6;
+}
+
+.hero-subtitle {
+  max-width: 54ch;
+  color: var(--fg-soft);
+  font-size: 1.08rem;
+}
+
+.hero-note,
+.muted-copy,
+.screen-copy,
+.section-copy,
+.chat-header-note,
+.composer-label,
+.message-role,
+.companion-subtitle,
+.card-subtitle,
+.subtle-pill,
+.eyebrow,
+.system-label,
+.system-value,
+.metadata-line,
+.progress-caption,
+.filter-pill,
+.archive-index {
+  color: var(--muted);
+}
+
+.eyebrow,
+.system-label,
+.archive-index {
+  font-family:
+    "Cascadia Mono", "Consolas", "SFMono-Regular", "Liberation Mono", monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  color: var(--accent-strong);
+  text-shadow: 0 0 14px rgba(129, 203, 195, 0.12);
+}
+
+.system-label,
+.archive-index {
+  color: var(--muted-strong);
+}
+
+.system-value,
+.subtle-pill,
+.recommendation-pill,
+.status-chip,
+.filter-pill,
+.secondary-button,
+.ghost-button,
+.primary-button,
+.choice-card strong,
+.review-grid dt,
+.review-grid dd,
+.composer-label,
+.message-role {
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.metadata-line,
+.system-value,
+.progress-caption {
+  font-size: 0.88rem;
+}
+
+.feature-grid,
+.choice-grid,
+.vault-grid,
+.diagnostic-grid,
+.review-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.feature-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.choice-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.choice-grid.is-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.choice-grid.is-four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.vault-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.diagnostic-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.feature-card,
+.spotlight-card,
+.review-card,
+.sidebar-card,
+.archive-card,
+.dossier-card,
+.empty-card {
+  padding: 22px;
+}
+
+.feature-card h2,
+.spotlight-card h3,
+.review-card h3,
+.empty-card h2,
+.sidebar-card h2,
+.archive-card h2,
+.dossier-card h3,
+.chat-sidebar h1,
+.screen-header h1 {
+  margin-bottom: 10px;
+  font-size: 1.35rem;
+}
+
+.feature-list {
+  padding-left: 18px;
+  display: grid;
+  gap: 10px;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  line-height: 1.55;
+}
+
+.hero-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: rgba(7, 15, 16, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(129, 203, 195, 0.04);
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.status-chip,
+.recommendation-pill,
+.subtle-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  min-height: 34px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.recommendation-pill,
+.status-chip.is-accent {
+  color: var(--accent-strong);
+  border-color: rgba(129, 203, 195, 0.26);
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 18px rgba(129, 203, 195, 0.05);
+}
+
+.status-chip.is-warning {
+  color: #e1bc97;
+  border-color: rgba(200, 154, 104, 0.26);
+  background: var(--warning-soft);
+}
+
+.onboarding-panel {
+  min-height: 780px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.panel-header,
+.screen-header,
+.chat-header,
+.composer-actions,
+.panel-actions,
+.wizard-footer,
+.card-topline,
+.header-actions,
+.sidebar-actions,
+.progress-header,
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.progress-header {
+  align-items: flex-end;
+}
+
+.progress-caption {
+  font-family:
+    "Cascadia Mono", "Consolas", "SFMono-Regular", "Liberation Mono", monospace;
+  letter-spacing: 0.06em;
+}
+
+.progress-track {
+  position: relative;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  border: 1px solid rgba(129, 203, 195, 0.15);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
+    rgba(6, 12, 13, 0.92);
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.2), transparent 18%),
+    linear-gradient(90deg, var(--accent), #5ea39d);
+  box-shadow: 0 0 24px rgba(129, 203, 195, 0.24);
+  transition: width 180ms ease;
+}
+
+.boot-list,
+.archive-list {
+  display: grid;
+  gap: 12px;
+}
+
+.boot-item,
+.archive-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  line-height: 1.55;
+}
+
+.boot-index,
+.archive-index {
+  min-width: 3ch;
+  color: var(--warning);
+}
+
+.choice-card,
+.filter-pill,
+.ghost-button,
+.secondary-button,
+.primary-button,
+.composer-input,
+.text-input,
+.text-area {
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background-color 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.choice-card {
+  min-height: 154px;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 28%),
+    var(--surface-glass);
+  padding: 20px;
+  text-align: left;
+  display: grid;
+  gap: 10px;
+  cursor: pointer;
+  color: var(--fg);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.choice-card strong {
+  font-size: 1rem;
+}
+
+.choice-card.is-selected,
+.choice-card:hover {
+  border-color: rgba(129, 203, 195, 0.4);
+  background:
+    linear-gradient(180deg, rgba(129, 203, 195, 0.1), transparent 34%),
+    rgba(19, 38, 41, 0.96);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 0 0 1px rgba(129, 203, 195, 0.04),
+    0 0 22px rgba(129, 203, 195, 0.08);
+}
+
+.choice-card.is-selected .card-subtitle,
+.choice-card.is-selected strong {
+  color: var(--accent-strong);
+}
+
+.review-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.review-grid dt {
+  margin-bottom: 6px;
+  font-size: 0.79rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.review-grid dd {
+  line-height: 1.5;
+}
+
+.system-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
+}
+
+.primary-button,
+.secondary-button,
+.ghost-button,
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.primary-button {
+  border: 1px solid rgba(129, 203, 195, 0.34);
+  background:
+    linear-gradient(180deg, rgba(171, 239, 229, 0.18), rgba(129, 203, 195, 0.12)),
+    rgba(14, 31, 33, 0.96);
+  color: var(--accent-strong);
+  box-shadow: 0 0 24px rgba(129, 203, 195, 0.08);
+}
+
+.primary-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 0 28px rgba(129, 203, 195, 0.12);
+}
+
+.primary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.secondary-button,
+.ghost-button,
+.filter-pill {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--fg);
+}
+
+.ghost-button {
+  color: var(--muted);
+}
+
+.secondary-button:hover,
+.ghost-button:hover,
+.filter-pill:hover {
+  border-color: rgba(129, 203, 195, 0.3);
+  background: rgba(129, 203, 195, 0.08);
+}
+
+.screen-header {
+  padding: 8px 2px 0;
+}
+
+.chat-sidebar,
+.chat-stage {
+  padding: 28px;
+}
+
+.chat-sidebar {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+}
+
+.chat-stage {
+  display: grid;
+  grid-template-rows: auto minmax(340px, 1fr) auto;
+  gap: 18px;
+  min-height: 780px;
+}
+
+.message-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-right: 6px;
+  overflow: auto;
+}
+
+.message-empty-state,
+.message-card {
+  position: relative;
+  border: 1px solid var(--line);
+  padding: 18px 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 28%),
+    var(--surface-strong);
+}
+
+.message-card.is-user {
+  align-self: flex-end;
+  max-width: min(80%, 620px);
+  border-color: rgba(200, 154, 104, 0.28);
+  background:
+    linear-gradient(180deg, rgba(200, 154, 104, 0.08), transparent 30%),
+    rgba(33, 27, 22, 0.96);
+}
+
+.message-card.is-assistant {
+  align-self: flex-start;
+  max-width: min(84%, 680px);
+}
+
+.message-role {
+  margin-bottom: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.composer-shell {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.composer-input {
+  width: 100%;
+  resize: vertical;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 40%),
+    rgba(8, 15, 16, 0.96);
+  color: var(--fg);
+  padding: 16px 18px;
+  min-height: 124px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.text-input,
+.text-area {
+  width: 100%;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 40%),
+    rgba(8, 15, 16, 0.96);
+  color: var(--fg);
+  padding: 14px 16px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.text-area {
+  min-height: 112px;
+  resize: vertical;
+}
+
+.composer-input::placeholder {
+  color: rgba(142, 161, 157, 0.8);
+}
+
+.text-input::placeholder,
+.text-area::placeholder {
+  color: rgba(142, 161, 157, 0.8);
+}
+
+.composer-input:focus,
+.text-input:focus,
+.text-area:focus,
+.choice-card:focus-visible,
+.primary-button:focus-visible,
+.secondary-button:focus-visible,
+.ghost-button:focus-visible,
+.filter-pill:focus-visible {
+  outline: none;
+  border-color: rgba(129, 203, 195, 0.42);
+  box-shadow: var(--focus-ring);
+}
+
+.pill-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-pill.is-active {
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  border-color: rgba(129, 203, 195, 0.36);
+}
+
+.archive-card,
+.dossier-card {
+  min-height: 220px;
+}
+
+.archive-card h2,
+.dossier-card h3 {
+  color: var(--fg);
+}
+
+.empty-card {
+  min-height: 220px;
+}
+
+.inline-link {
+  color: var(--accent-strong);
+}
+
+@media (max-width: 980px) {
+  .app-shell,
+  .chat-shell,
+  .vault-grid,
+  .feature-grid,
+  .choice-grid,
+  .field-grid,
+  .review-grid,
+  .diagnostic-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app-shell,
+  .screen-shell {
+    width: min(100vw - 32px, 960px);
+    padding: 16px 0 28px;
+  }
+
+  .hero-panel,
+  .onboarding-panel,
+  .chat-stage {
+    min-height: auto;
+  }
+
+  .panel-header,
+  .screen-header,
+  .chat-header,
+  .composer-actions,
+  .panel-actions,
+  .wizard-footer,
+  .header-actions,
+  .sidebar-actions,
+  .progress-header,
+  .toolbar-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }

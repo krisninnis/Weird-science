@@ -1,29 +1,20 @@
 import { Navigate, createBrowserRouter } from "react-router-dom";
-
-function OnboardingRoute(): JSX.Element {
-  return <h1>Onboarding</h1>;
-}
-
-function ChatRoute(): JSX.Element {
-  return <h1>Chat</h1>;
-}
-
-function VaultRoute(): JSX.Element {
-  return <h1>Vault</h1>;
-}
+import ChatScreen from "@/features/chat/screens/ChatScreen";
+import OnboardingScreen from "@/features/onboarding/screens/OnboardingScreen";
+import VaultScreen from "@/features/vault/screens/VaultScreen";
 
 export const appRouter = createBrowserRouter([
   {
     path: "/",
-    element: <OnboardingRoute />
+    element: <OnboardingScreen />
   },
   {
     path: "/chat",
-    element: <ChatRoute />
+    element: <ChatScreen />
   },
   {
     path: "/vault",
-    element: <VaultRoute />
+    element: <VaultScreen />
   },
   {
     path: "*",

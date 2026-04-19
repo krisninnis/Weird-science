@@ -1,4 +1,9 @@
-﻿import { getDb } from "@/lib/db/sqlite";
+import { getDb } from "@/lib/db/sqlite";
+import type {
+  ChapterContext,
+  RelationshipPhase,
+  RelationshipState
+} from "../relationshipTypes";
 
 export interface RelationshipStateRecord {
   companion_id: string;
@@ -10,19 +15,32 @@ export interface RelationshipStateRecord {
   playfulness: number;
   romantic_charge: number;
   dependency_risk: number;
-  phase:
-    | "new"
-    | "warming"
-    | "bonded"
-    | "deepening"
-    | "strained"
-    | "repairing"
-    | "fledging"
-    | "dormant";
+  phase: RelationshipPhase;
   chapter: string | null;
   created_at: string;
   updated_at: string;
   last_interaction_at: string | null;
+}
+
+export function mapRelationshipRecordToState(
+  record: RelationshipStateRecord
+): RelationshipState {
+  return {
+    companionId: record.companion_id,
+    familiarity: record.familiarity,
+    trust: record.trust,
+    affection: record.affection,
+    openness: record.openness,
+    tension: record.tension,
+    playfulness: record.playfulness,
+    romanticCharge: record.romantic_charge,
+    dependencyRisk: record.dependency_risk,
+    phase: record.phase,
+    chapter: record.chapter as ChapterContext | null,
+    createdAt: record.created_at,
+    updatedAt: record.updated_at,
+    lastInteractionAt: record.last_interaction_at
+  };
 }
 
 export async function createRelationshipState(
@@ -98,17 +116,10 @@ export async function updateTrust(
     [trust, new Date().toISOString(), companionId]
   );
 }
+
 export async function updateRelationshipPhase(
   companionId: string,
-  phase:
-    | "new"
-    | "warming"
-    | "bonded"
-    | "deepening"
-    | "strained"
-    | "repairing"
-    | "fledging"
-    | "dormant"
+  phase: RelationshipPhase
 ): Promise<void> {
   const db = await getDb();
 
@@ -119,5 +130,46 @@ export async function updateRelationshipPhase(
     WHERE companion_id = ?
     `,
     [phase, new Date().toISOString(), companionId]
+  );
+}
+
+export async function saveRelationshipState(
+  state: RelationshipState
+): Promise<void> {
+  const db = await getDb();
+
+  await db.execute(
+    `
+    UPDATE relationship_states
+    SET
+      familiarity = ?,
+      trust = ?,
+      affection = ?,
+      openness = ?,
+      tension = ?,
+      playfulness = ?,
+      romantic_charge = ?,
+      dependency_risk = ?,
+      phase = ?,
+      chapter = ?,
+      updated_at = ?,
+      last_interaction_at = ?
+    WHERE companion_id = ?
+    `,
+    [
+      state.familiarity,
+      state.trust,
+      state.affection,
+      state.openness,
+      state.tension,
+      state.playfulness,
+      state.romanticCharge,
+      state.dependencyRisk,
+      state.phase,
+      state.chapter,
+      state.updatedAt,
+      state.lastInteractionAt,
+      state.companionId
+    ]
   );
 }

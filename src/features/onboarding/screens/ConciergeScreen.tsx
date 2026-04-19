@@ -9,6 +9,7 @@ import {
   getRelationshipState
 } from "@/features/relationship/repository/relationshipRepository";
 import {
+  createOnboardingSelection,
   saveOnboardingSelection,
   type ChapterType,
   type PresenceType
@@ -17,12 +18,10 @@ import {
 type CompanionId = "mara" | "iris" | "rowan";
 
 const chapterLabels: Record<ChapterType, string> = {
-  general_loneliness: "General loneliness",
-  grief: "Grief",
-  recovery: "Recovery",
   caregiving_isolation: "Caregiving isolation",
-  relocation: "Relocation",
-  night_shift: "Night shift"
+  night_shift: "Night shift",
+  postpartum: "Postpartum",
+  expat_relocation: "Expat relocation"
 };
 
 const presenceLabels: Record<PresenceType, string> = {
@@ -117,7 +116,7 @@ function buildSeedCompanion(companionId: CompanionId) {
   };
 }
 
-export default function ConciergeScreen() {
+export default function ConciergeScreen(): JSX.Element {
   const navigate = useNavigate();
   const [presence, setPresence] = useState<PresenceType | null>(null);
   const [chapter, setChapter] = useState<ChapterType | null>(null);
@@ -128,7 +127,7 @@ export default function ConciergeScreen() {
     return companionForPresence(presence);
   }, [presence]);
 
-  async function handleContinue() {
+  async function handleContinue(): Promise<void> {
     if (!presence || !chapter || !recommendedCompanion) return;
 
     setIsSaving(true);
@@ -147,11 +146,53 @@ export default function ConciergeScreen() {
         await createRelationshipState(recommendedCompanion, chapter);
       }
 
-      saveOnboardingSelection({
-        companionId: recommendedCompanion,
-        chapter,
-        presence
-      });
+      saveOnboardingSelection(
+        createOnboardingSelection({
+          companionId: recommendedCompanion,
+          chapter,
+          presence,
+          clientApplication: {
+            displayName: "",
+            age: 30,
+            country: "",
+            chapter,
+            supportStyle: "companionship",
+            presence,
+            memoryPreference: "balanced",
+            romancePreference: "platonic_only",
+            genderIdentity: "",
+            pronouns: "",
+            relationshipPreference: "",
+            languages: "",
+            boundaries: "",
+            repairStyle: "gentle_and_plain",
+            spaceStyle: "quiet_room"
+          },
+          companionStudio: {
+            creationMode: "recommended",
+            baseCompanionId: recommendedCompanion,
+            genderFeel: recommendedCompanion === "rowan" ? "ungendered" : "androgynous",
+            ageVibe: "peer",
+            heightVibe: "medium",
+            hairColor: "unspecified",
+            hairStyle: "unspecified",
+            eyeColor: "unspecified",
+            buildVibe: "unspecified",
+            styleVibe: "minimal",
+            guidanceBalance: "balanced",
+            regionalInspiration: "",
+            futureVoiceVibe: "",
+            doNotWant: ""
+          },
+          privatePreferences: {
+            shareSensitivePreferences: false,
+            ethnicityPreference: "",
+            culturalBackgroundPreference: "",
+            orientationOrRelationshipPreference: "",
+            openToMatchedWith: []
+          }
+        })
+      );
 
       navigate("/chat");
     } finally {
@@ -160,140 +201,101 @@ export default function ConciergeScreen() {
   }
 
   return (
-    <section>
-      <h1>Concierge</h1>
-      <p>
-        Let’s choose the kind of companion presence that fits where you are
-        right now.
-      </p>
+    <main className="screen-shell">
+      <header className="screen-header">
+        <div className="screen-copy-stack">
+          <p className="eyebrow">Concierge</p>
+          <h1>Companion setup console</h1>
+          <p className="screen-copy">
+            Choose the kind of presence that fits where you are right now. This
+            route still seeds the early shell, but it now belongs to the same calm
+            workstation language as the rest of onboarding.
+          </p>
+        </div>
+      </header>
 
-      <div
-        style={{
-          marginTop: "24px",
-          padding: "16px",
-          border: "1px solid #333",
-          borderRadius: "12px"
-        }}
-      >
-        <h2 style={{ marginTop: 0 }}>What kind of presence do you need?</h2>
-        <div
-          style={{
-            display: "flex",
-            gap: "12px",
-            flexWrap: "wrap",
-            marginTop: "12px"
-          }}
-        >
-          {(["steady", "reflective", "catalytic"] as PresenceType[]).map(
-            (option) => (
+      <section className="onboarding-panel">
+        <article className="spotlight-card">
+          <p className="system-label">Presence calibration</p>
+          <h3>What kind of presence do you need?</h3>
+          <div className="choice-grid">
+            {(["steady", "reflective", "catalytic"] as PresenceType[]).map(
+              (option) => (
+                <button
+                  key={option}
+                  className={`choice-card${presence === option ? " is-selected" : ""}`}
+                  onClick={() => setPresence(option)}
+                >
+                  <strong>{presenceLabels[option]}</strong>
+                  <span>
+                    {option === "steady"
+                      ? "Low-pressure, dependable, and quietly stabilizing."
+                      : option === "reflective"
+                        ? "Thoughtful, perceptive, and comfortable with nuance."
+                        : "Gently activating, dry, and useful when you are stuck."}
+                  </span>
+                </button>
+              )
+            )}
+          </div>
+        </article>
+
+        <article className="spotlight-card">
+          <p className="system-label">Context mapping</p>
+          <h3>What chapter are you in?</h3>
+          <div className="choice-grid">
+            {(
+              [
+                "caregiving_isolation",
+                "night_shift",
+                "postpartum",
+                "expat_relocation"
+              ] as ChapterType[]
+            ).map((option) => (
               <button
                 key={option}
-                onClick={() => setPresence(option)}
-                style={{
-                  padding: "12px 16px",
-                  borderRadius: "10px",
-                  border: "1px solid #444",
-                  background: presence === option ? "#2f2f2f" : "#1a1a1a",
-                  color: "#fff",
-                  cursor: "pointer"
-                }}
+                className={`choice-card${chapter === option ? " is-selected" : ""}`}
+                onClick={() => setChapter(option)}
               >
-                {presenceLabels[option]}
+                <strong>{chapterLabels[option]}</strong>
+                <span>
+                  Use this chapter to ground the opening conversation in real
+                  conditions.
+                </span>
               </button>
-            )
+            ))}
+          </div>
+        </article>
+
+        <article className="review-card">
+          <p className="system-label">Recommendation</p>
+          <h3>Suggested companion</h3>
+          {recommendedCompanion ? (
+            <p>
+              Based on your selection, I&apos;d start you with{" "}
+              <strong>
+                {recommendedCompanion.charAt(0).toUpperCase() +
+                  recommendedCompanion.slice(1)}
+              </strong>
+              .
+            </p>
+          ) : (
+            <p>Choose a presence first to see a recommendation.</p>
           )}
+        </article>
+
+        <div className="panel-actions">
+          <button
+            className="primary-button"
+            onClick={() => {
+              void handleContinue();
+            }}
+            disabled={!presence || !chapter || isSaving}
+          >
+            {isSaving ? "Preparing..." : "Continue"}
+          </button>
         </div>
-      </div>
-
-      <div
-        style={{
-          marginTop: "16px",
-          padding: "16px",
-          border: "1px solid #333",
-          borderRadius: "12px"
-        }}
-      >
-        <h2 style={{ marginTop: 0 }}>What chapter are you in?</h2>
-        <div
-          style={{
-            display: "flex",
-            gap: "12px",
-            flexWrap: "wrap",
-            marginTop: "12px"
-          }}
-        >
-          {(
-            [
-              "general_loneliness",
-              "grief",
-              "recovery",
-              "caregiving_isolation",
-              "relocation",
-              "night_shift"
-            ] as ChapterType[]
-          ).map((option) => (
-            <button
-              key={option}
-              onClick={() => setChapter(option)}
-              style={{
-                padding: "12px 16px",
-                borderRadius: "10px",
-                border: "1px solid #444",
-                background: chapter === option ? "#2f2f2f" : "#1a1a1a",
-                color: "#fff",
-                cursor: "pointer"
-              }}
-            >
-              {chapterLabels[option]}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div
-        style={{
-          marginTop: "16px",
-          padding: "16px",
-          border: "1px solid #333",
-          borderRadius: "12px"
-        }}
-      >
-        <h2 style={{ marginTop: 0 }}>Recommendation</h2>
-        {recommendedCompanion ? (
-          <p>
-            Based on your selection, I’d start you with{" "}
-            <strong>
-              {recommendedCompanion.charAt(0).toUpperCase() +
-                recommendedCompanion.slice(1)}
-            </strong>
-            .
-          </p>
-        ) : (
-          <p>Choose a presence first to see a recommendation.</p>
-        )}
-      </div>
-
-      <div style={{ marginTop: "20px" }}>
-        <button
-          onClick={() => {
-            void handleContinue();
-          }}
-          disabled={!presence || !chapter || isSaving}
-          style={{
-            padding: "12px 18px",
-            borderRadius: "10px",
-            border: "1px solid #444",
-            background:
-              !presence || !chapter || isSaving ? "#1a1a1a" : "#2a2a2a",
-            color: "#fff",
-            cursor:
-              !presence || !chapter || isSaving ? "not-allowed" : "pointer",
-            opacity: !presence || !chapter || isSaving ? 0.6 : 1
-          }}
-        >
-          {isSaving ? "Saving..." : "Continue"}
-        </button>
-      </div>
-    </section>
+      </section>
+    </main>
   );
 }

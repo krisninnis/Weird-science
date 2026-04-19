@@ -1,6 +1,6 @@
-# Weird Science — Master Build Plan
+# WEIRD SCIENCE — MASTER BUILD PLAN
 
-_Last updated: 2026-04-19_
+Last updated: 2026-04-19
 
 Legend:
 [x] done and committed
@@ -14,8 +14,8 @@ Legend:
 PRODUCT POSITIONING
 [x] Locked positioning: "A private desktop companion where memory is inspectable, the relationship evolves credibly, the bond is allowed to change or end, and loneliness is met with dignity instead of exploitation."
 [x] Lisa-coded not girlfriend-coded: rooting for the user to flourish and eventually need the companion less
-[ ] Pick the FIRST launch Chapter (not all of them at once):
-candidates: caregiving isolation, night-shift, postpartum, expat relocation
+[x] Pick the FIRST launch Chapter:
+caregiving isolation
 NOT for v1: grief, widowhood (both need a bereavement counsellor review first)
 [ ] Write the consumer-facing brand name (Weird Science is the internal codename)
 [ ] Decide launch audience geography (start narrow — UK + US English only)
@@ -54,15 +54,18 @@ TAURI SHELL
 
 REPOSITORIES + TEST HARNESS
 [~] Task 1.3: migration 002 (embedding BLOB + embedding_model), row Zod schemas, all repos, tests via better-sqlite3, cleanup of Phase alias + `any` types in chat repos
-[ ] Verify Task 1.3 end-to-end with typecheck/lint/test all green, commit and push
+[~] Verify Task 1.3 end-to-end with typecheck/lint/test all green, commit and push
 
 LLM CLIENTS
-[ ] Task 1.4: Ollama client wrapper (renderer side) with listener-first streaming
+[x] Task 1.4: Ollama client wrapper (renderer side) with listener-first streaming
 [ ] Task 1.5: Hosted model adapter (Anthropic + OpenAI providers, keys via Rust env)
 
 PROMPT + ENGINE
-[ ] Task 1.6: Five-layer prompt builder (system canon / companion canon / state summary / retrieved memories / recent turns) with token budget trimming and phase directives
-[ ] Task 1.7: Relationship engine — phase state machine, dependency risk signals, romanticCharge clamp, state influence logging
+[x] Task 1.6: Five-layer prompt builder (system canon / companion canon / state summary / retrieved memories / recent turns) with token budget trimming and phase directives
+[x] Task 1.7: Relationship engine — phase state machine, dependency risk signals, romanticCharge clamp, state influence logging
+
+LOCAL AI SETUP
+[x] Local Ollama setup verified - server reachable on 127.0.0.1:11434 - llama3.2 installed - nomic-embed-text installed - local inference tested successfully
 
 END-OF-SPRINT-1 ACCEPTANCE CRITERIA
 [ ] A user message goes through: repo write → retrieve → prompt build → stream from hosted or local → repo write of reply → state + memory-use rows written
@@ -82,11 +85,11 @@ MEMORY PIPELINE
 MESSAGE COMPOSER
 [ ] Task 2.4: composeReply pipeline ties repos + retrieval + prompt + LLM + influence logging + async extraction + async state update — reply never blocks on background work
 
-UI — FIRST REAL SCREENS (Cowork)
-[ ] Lisa conversational onboarding (one question at a time, script authored by a human) - welcome, name, reason, how-are-you, presence style, chapter, memory depth, age gate, adult-mode mention, companion match, confirm - companion matching logic in companionMatcher.ts - keyboard-only completion, accessible typography for 60+ - visual identity: muted, serif, clinical-adjacent; not gamer/neon/anime
-[ ] Chat screen - streaming message bubbles - composer with Enter-to-send, shift-Enter for newline - phase-aware subtle visual cues (never gamified labels) - typing indicator
+UI — FIRST REAL SCREENS
+[~] Lisa conversational onboarding - welcome, name, reason, how-are-you, presence style, chapter, memory depth, age gate, adult-mode mention, companion match, confirm - richer client-application + companion-creation flow now exists locally - still needs full human-authored Lisa script and final production flow
+[~] Chat screen - shell exists - still needs full streaming message loop, subtle phase-aware cues, and final composer polish
 [ ] Inspectability drawer - tap a message → which memories were used (with why), which were retrieved but unused, which state values influenced tone, any safety flags - accessible by keyboard
-[ ] Memory vault screen - filter by type (fact / preference / emotional_event / life_context / shared_language / ritual / companion_self_update / relationship_reference / chapter_specific) - edit, delete, pin, "don't infer this again" - shared_language section surfaced separately ("Our Language") - memory reinforcement/fade state visible, not hidden
+[~] Memory vault screen - shell exists - still needs real repo-backed memory filters, edit/delete/pin, "don't infer this again", and visible fade/reinforcement state
 [ ] Correction UX directly from a message ("that's not right" / "don't phrase it like that")
 [ ] "Why did you say that?" panel — same data as the inspectability drawer but framed for non-technical users
 
@@ -164,6 +167,14 @@ END-OF-SPRINT-3 ACCEPTANCE CRITERIA
 [>] Multi-device sync (breaks local-first unless handled carefully)
 [>] Companion-to-companion interaction
 
+DEVICE / LOCAL MEDIA CAPABILITY
+[>] Device capability check (CPU / RAM / GPU / VRAM / disk)
+[>] Recommended-mode selector during setup
+[>] Hardware tier classification for local AI features
+[>] Use Ollama for text + embeddings, not as the main Windows image/video engine
+[>] Use ComfyUI as the local image generation engine
+[>] Delay local video generation until after portraits/avatars work well
+
 ## PART 6 — FOUNDER-ONLY WORK (cannot be delegated)
 
 WRITING
@@ -181,7 +192,8 @@ WRITING
 [ ] Safety promise page
 
 DECISIONS
-[ ] First launch Chapter (pick one)
+[x] First launch Chapter:
+caregiving isolation
 [ ] First launch audience geography
 [ ] Consumer brand name
 [ ] Minimum hardware spec
@@ -199,6 +211,20 @@ REVIEW CADENCE
 [ ] Check for shallow flirty drift (especially around dependencyRisk)
 [ ] Watch retention metrics BUT not as a goal — as a diagnostic
 [ ] Regression test Mara/Iris/Rowan voice drift monthly
+
+ADULT MODE / SENSITIVE DATA RULES
+[ ] Adult mode requires highly effective age assurance, not just an 18+ checkbox/paywall
+[ ] Keep adult mode optional and secondary to the core companion product
+[ ] Make sexual/orientation/ethnicity fields optional, private, and editable
+[ ] Use explicit consent language for sensitive preference fields
+[ ] Build text-first adult intimacy mode before any explicit image or voice features
+[ ] Ban coercive, degrading, exploitative, manipulative, or dependency-driven sexual experiences
+[ ] Keep public marketing for adult features tightly targeted and non-exploitative
+[ ] Add retention/deletion controls for sensitive preference data
+[ ] Build adult gating in the app layer, not as a model parameter
+[ ] Require highly effective age assurance before any explicit adult mode
+[ ] Keep sensitive preference fields optional and private
+[ ] Block minors, coercion, non-consensual, exploitative, and illegal sexual content even in 18+ mode
 
 ## PART 7 — LAUNCH PREP (not yet)
 
@@ -236,11 +262,11 @@ All of these must be true to ship:
 
 ## CURRENT COMPLETION ESTIMATE
 
-Against MVP scope: ~15%
+Against MVP scope: ~25–30%
 Foundations: strong
-Execution: early
-Biggest near-term unblock: finishing Task 1.3 repositories + starting Cowork onboarding in parallel
-Biggest risk if ignored: the empty UI tax — looks dead, feels discouraging, not indicative of actual progress
+Execution: meaningfully underway
+Biggest near-term unblock: prove the full local reply loop end-to-end
+Biggest risk if ignored: building more surface area before the core compose/retrieve/respond/state-update loop is proven
 
 ## LIVING RULES
 
@@ -251,4 +277,4 @@ Biggest risk if ignored: the empty UI tax — looks dead, feels discouraging, no
 - No any, no @ts-ignore
 - Canon trumps features
 - Dignity trumps retention
-- Local-first trumps everything
+- Local-first trumps everything all updated give me the new file and where it should go docs/product/not-this.md as well and show me where we add it in project
